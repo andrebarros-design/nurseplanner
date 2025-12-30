@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HPA Planeamento</title>
+    <link href="style.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Top Navigation Bar -->
+        <header class="top-nav">
+            <div class="brand">
+                <button class="icon-btn mobile-menu-btn" id="mobileMenuBtn">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h1>HPA Planeamento</h1>
+            </div>
+            <div class="top-actions">
+                <div class="search-wrapper">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="globalSearch" placeholder="Search...">
+                </div>
+                <button class="icon-btn settings-btn" id="settingsBtn">
+                    <i class="fas fa-cog"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Secondary Toolbar (Greeting & Views) -->
+        <div class="secondary-toolbar">
+            <div class="greeting-section">
+                <h2 id="dynamicGreeting">Bem vindo/a</h2>
+                <div class="identity-widget" id="identityWidget" style="display:none;">
+                    <span class="user-trigger" id="userIdentityName" title="Clique para alterar perfil">
+                        <i class="fas fa-user-circle"></i> <span id="userNameDisplay">--</span>
+                    </span>
+                    <div class="kpi-pill" title="Horas Estimadas este Mês">
+                        <i class="far fa-clock"></i> <span class="kpi-value" id="kpiHours">0</span> <span
+                            class="kpi-label">h</span>
+                    </div>
+                    <div class="kpi-pill" title="Turnos Totais / Noites">
+                        <i class="far fa-calendar-check"></i> <span class="kpi-value" id="kpiShifts">0</span> <span
+                            class="kpi-label">T</span>
+                    </div>
+                    <div class="kpi-pill" title="Fins de Semana">
+                        <i class="fas fa-umbrella-beach"></i> <span class="kpi-value" id="kpiWeekends">0</span> <span
+                            class="kpi-label">fds</span>
+                    </div>
+                </div>
+            </div>
+            <div class="view-controls">
+                <div class="view-switcher">
+                    <button class="view-btn">Dia</button>
+                    <button class="view-btn">Semana</button>
+                    <button class="view-btn">Mês</button>
+                    <button class="view-btn active">Ano</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <!-- Mini Calendar Widget -->
+            <div class="mini-calendar">
+                <div class="mini-cal-header">
+                    <span id="miniCalMonth">Janeiro 2026</span>
+                    <div class="mini-cal-nav">
+                        <button id="todayBtn" class="today-btn">Hoje</button>
+                        <i class="fas fa-chevron-left"></i>
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                </div>
+                <div class="mini-cal-grid" id="miniCalendarGrid">
+                    <!-- JS will populate this -->
+                </div>
+            </div>
+
+            <div class="sidebar-divider"></div>
+
+            <!-- Filters -->
+            <div class="filters-section">
+                <!-- Turnos Group -->
+                <h3>Turnos</h3>
+                <div class="filter-list">
+                    <label class="checkbox-filter">
+                        <input type="checkbox" id="filter-morning" checked>
+                        <span class="checkmark"></span>
+                        Manhã
+                    </label>
+                    <label class="checkbox-filter">
+                        <input type="checkbox" id="filter-interim" checked>
+                        <span class="checkmark"></span>
+                        Intermédio
+                    </label>
+                    <label class="checkbox-filter">
+                        <input type="checkbox" id="filter-afternoon" checked>
+                        <span class="checkmark"></span>
+                        Tarde
+                    </label>
+                    <label class="checkbox-filter">
+                        <input type="checkbox" id="filter-saturday" checked>
+                        <span class="checkmark"></span>
+                        Sábados
+                    </label>
+                </div>
+
+                <div class="sidebar-divider" style="margin: 1.5rem 0;"></div>
+
+                <!-- Equipa Group -->
+                <h3>Equipa</h3>
+                <div class="filter-list">
+                    <label class="checkbox-filter">
+                        <input type="checkbox" id="filter-team-consulta" checked>
+                        <span class="checkmark"></span>
+                        Consulta Externa
+                    </label>
+                    <label class="checkbox-filter">
+                        <input type="checkbox" id="filter-team-gastro" checked>
+                        <span class="checkmark"></span>
+                        Gastro
+                    </label>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Legacy Settings Panel (Hidden by default, toggled via Settings Icon) -->
+            <div class="settings-panel hidden" id="settingsPanel">
+                <div class="panel-header">
+                    <h3>Configuração</h3>
+                    <button class="close-panel"><i class="fas fa-times"></i></button>
+                </div>
+
+                <div class="panel-section">
+                    <h4>O Meu Perfil</h4>
+                    <select id="userSelect" class="styled-select">
+                        <option value="">Selecionar Enfermeiro...</option>
+                    </select>
+                </div>
+
+                <div class="panel-section">
+                    <h4>Gestão de Equipa</h4>
+                    <div class="switch-container">
+                        <span style="font-size:0.9rem; color:var(--text-secondary);">Modo Avançado (Heatmap)</span>
+                        <label class="switch">
+                            <input type="checkbox" id="managementModeToggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div id="heatmapLegend"
+                        style="display:none; margin-top:10px; font-size:0.75rem; color:var(--text-secondary); background:var(--bg-color); padding:10px; border-radius:6px; border:1px solid var(--card-border);">
+                        <p style="margin:0 0 5px 0; font-weight:bold;">Legenda de Cobertura:</p>
+                        <div style="display:flex; gap:10px; align-items:center; margin-bottom:4px;">
+                            <div style="width:10px; height:10px; background:#00e676; border-radius:50%;"></div> Alta
+                            (20+ Staff)
+                        </div>
+                        <div style="display:flex; gap:10px; align-items:center; margin-bottom:4px;">
+                            <div style="width:10px; height:10px; background:#ffca28; border-radius:50%;"></div> Média
+                            (15-19 Staff)
+                        </div>
+                        <div style="display:flex; gap:10px; align-items:center;">
+                            <div style="width:10px; height:10px; background:#ff5252; border-radius:50%;"></div> Baixa (
+                            <15 Staff)</div>
+                        </div>
+                    </div>
+
+                    <div class="panel-section" id="myStatsSection" style="display:none;">
+                        <h4>Minhas Estatísticas (Mês)</h4>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <span class="stat-value" id="statHours">0</span>
+                                <span class="stat-label">Horas (Est.)</span>
+                            </div>
+                            <div class="stat-card">
+                                <span class="stat-value" id="statShifts">0</span>
+                                <span class="stat-label">Turnos</span>
+                            </div>
+                            <div class="stat-card">
+                                <span class="stat-value" id="statNights">0</span>
+                                <span class="stat-label">Noites</span>
+                            </div>
+                            <div class="stat-card">
+                                <span class="stat-value" id="statWeekends">0</span>
+                                <span class="stat-label">FDS</span>
+                            </div>
+                        </div>
+                        <button class="action-btn" id="exportBtn"><i class="fas fa-calendar-alt"></i> Exportar
+                            Calendário</button>
+                    </div>
+
+                    <div class="panel-section">
+                        <h4>Dados da Escala</h4>
+                        <p style="font-size:0.8rem; color:var(--text-secondary); margin-bottom:0.5rem;">Carregar novo
+                            ficheiro Excel</p>
+                        <input type="file" id="fileInput" accept=".xlsx, .xls" style="font-size:0.8rem;" />
+                    </div>
+
+                    <div style="margin: 1.5rem 0; border-top: 1px solid var(--border-color, #eee);"></div>
+
+                    <p>Ou importar do Google Sheets (Link Público)</p>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <input type="text" id="googleSheetUrl" placeholder="Cole o link aqui..."
+                            style="flex:1; padding: 0.5rem; border: 1px solid #ccc; border-radius: 4px;">
+                        <button id="importSheetBtn" class="action-btn"
+                            style="padding: 0.5rem 1rem; background: var(--highlight); color: white; border: none; border-radius: 4px; cursor: pointer;">
+                            <i class="fas fa-cloud-download-alt"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Team Sections -->
+                <div id="scheduleGrid"></div>
+        </main>
+    </div>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>
