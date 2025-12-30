@@ -1,4 +1,4 @@
-const rosterData = [
+﻿const rosterData = [
     {
         "name":  "Joselin Freitas",
         "id":  "91019",
@@ -518,3 +518,4 @@ const rosterData = [
                    }
     }
 ];
+
